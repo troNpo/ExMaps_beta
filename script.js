@@ -2468,17 +2468,11 @@ function activarSeguimientoGPS() {
       const punto = L.latLng(lat, lon);
       map.setView(punto, 16);
 
-      if (!marcadorGPS) {
-        marcadorGPS = L.marker(punto, {
-          icon: L.icon({
-            iconUrl: "icons/ui/fi-sr-location.svg",
-            iconSize: [32, 32],
-            iconAnchor: [16, 32]
-          })
-        }).addTo(map).bindPopup("📍 Estás aquí");
-      } else {
-        marcadorGPS.setLatLng(punto);
-      }
+      if if (!marcadorGPS) {
+  marcadorGPS = L.marker(punto).addTo(map).bindPopup("📍 Estás aquí");
+} else {
+  marcadorGPS.setLatLng(punto);
+}
 
       marcadorGPS.openPopup();
       mostrarAvisoToast("📍 Ubicación actualizada");
