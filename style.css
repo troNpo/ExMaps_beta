@@ -1,0 +1,1932 @@
+/* 🌍 Estilos base */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #101010;
+  color: #f0f0f0; /* ligeramente más legible que #fff */
+}
+/* 🌐 Mapa a pantalla completa */
+#map {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+#map {
+  height: 100vh;
+  width: 100%;
+}
+/* Botones dentro del menú ajustes de mapa */
+.menu-emergente button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  min-width: 140px;
+}
+.menu-emergente button img {
+  width: 22px;
+  height: 22px;
+  filter: invert(100%);
+}
+.menu-emergente button:hover {
+  background-color: #384051;
+}
+
+/* Responsive: ajuste para pantallas pequeñas */
+@media (max-width: 600px) {
+  .menu-emergente button {
+    font-size: 14px;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .menu-emergente button img {
+    width: 20px;
+    height: 20px;
+  }
+}
+/* 📄 Ítems tipo <li> con imagen + texto (caso menú mapa) */
+.menu-emergente li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  list-style: none;
+  min-width: 140px;
+}
+.menu-emergente li img {
+  width: 22px;
+  height: 22px;
+  filter: invert(100%);
+}
+.menu-emergente li:hover {
+  background-color: #384051; /* Color hover corregido */
+}
+
+/* 📱 Responsive: ajuste para pantallas pequeñas */
+@media (max-width: 600px) {
+  .menu-emergente li {
+    font-size: 14px;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .menu-emergente li img {
+    width: 20px;
+    height: 20px;
+  }
+}
+/* 🔙 Botón volver/cerrar */
+.btnVolverPanel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  border: none;
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  transition: background-color 0.3s ease;
+}
+.btnVolverPanel img {
+  width: 22px;
+  height: 22px;
+  filter: invert(100%);
+}
+.btnVolverPanel:hover {
+  background-color: #384051;
+}
+
+/* 📱 Responsive: ajuste para pantallas pequeñas */
+@media (max-width: 600px) {
+  .btnVolverPanel {
+    padding: 6px;
+  }
+
+  .btnVolverPanel img {
+    width: 20px;
+    height: 20px;
+  }
+}
+/* 🪟 Menú flotante ajustes de mapa */
+#menuAjustes {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px; /* Limita ancho en pantallas grandes */
+  bottom: 300px;
+  background: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  border-radius: 12px;
+  padding: 15px 20px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 350;
+  box-sizing: border-box;
+}
+#menuAjustes.visible {
+  display: flex;
+}
+
+#menuAjustes ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#menuAjustes li {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+  color: #f0f0f0;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: 'Segoe UI', sans-serif;
+}
+#menuAjustes li:hover {
+  background-color: #384051;
+}
+
+#menuAjustes li img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  filter: invert(100%);
+}
+
+#menuAjustes .cerrarMenu {
+  background: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+#menuAjustes .cerrarMenu img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%);
+}
+
+/* 📱 Responsive: ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+  #menuAjustes {
+    bottom: 120px; /* más accesible en pantallas pequeñas */
+    padding: 12px 16px;
+  }
+
+  #menuAjustes li {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  #menuAjustes li img {
+    width: 18px;
+    height: 18px;
+  }
+
+  #menuAjustes .cerrarMenu img {
+    width: 18px;
+    height: 18px;
+  }
+}
+/* 📌 Logo ExMaps */
+#logoExMaps {
+  position: absolute;
+  top: 0px;
+  left: 15%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  z-index: 1000;
+  max-width: 140px;
+  box-sizing: border-box;
+}
+#logoExMaps img {
+  width: 70px;
+  height: auto;
+  background: none;
+  border: none;
+}
+#logoExMaps span {
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #66ccff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* 🪧 Nombre de la app */
+#nombreApp {
+  position: fixed;
+  top: 25px;
+  left: 100px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #66ccff;
+  z-index: 1000;
+  white-space: nowrap;
+}
+
+/* 🔍 Botón búsqueda contextual */
+.btnBuscarPanel {
+  background-color: #bb0e26;
+  color: #ffffff;
+  border: none;
+  padding: 10px 14px;
+  font-size: 15px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.2s ease;
+}
+.btnBuscarPanel:hover {
+  background-color: #a00c20;
+}
+.btnBuscarPanel:active {
+  transform: scale(0.98);
+}
+
+/* 📱 Responsive: adaptación móvil */
+@media (max-width: 600px) {
+  #logoExMaps img {
+    width: 55px;
+  }
+
+  #logoExMaps span {
+    font-size: 14px;
+  }
+
+  #nombreApp {
+    font-size: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 20px;
+    text-align: center;
+  }
+
+  .btnBuscarPanel {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+}
+/* 📐 Panel lateral principal */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 360px;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  z-index: 900;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  box-sizing: border-box;
+}
+.sidebar.hidden {
+  display: none;
+}
+
+/* 📂 Subpaneles dinámicos categorías */
+.subpanel {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  border-radius: 12px;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  z-index: 999;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.subpanel.visible {
+  display: flex !important;
+}
+
+/* Encabezado de categoría con icono */
+.subpanel h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #66ccff;
+  font-size: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+.subpanel h2 .icono-panel {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) invert(1);
+}
+
+
+.btnBuscarPanel img,
+.btnSecundario img {
+  width: 24px;
+  height: 24px;
+  filter: invert(100%);
+}
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.button-row .btnBuscarPanel,
+.button-row .btnSecundario {
+  flex: 1;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* 📱 Responsive: ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+  .sidebar {
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .subpanel {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .subpanel h2 {
+    font-size: 18px;
+  }
+
+  .btnSecundario {
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 14px;
+  }
+
+  .btnSecundario img,
+  .btnBuscarPanel img {
+    width: 20px;
+    height: 20px;
+  }
+}
+/* 🧩 Botones de agrupaciones */
+.grupo-categorias {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.grupo-categorias button {
+  background-color: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  color: #f0f0f0;
+  font-size: 13.5px;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 500;
+  text-align: left;
+}
+
+.grupo-categorias button img {
+  width: 22px;
+  height: 22px;
+  filter: invert(100%);
+}
+
+/* 🧾 Checkbox visual */
+.poicheck {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+.contenedorFiltros {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 🎯 Responsive para pantallas ≤600px */
+@media (max-width: 600px) {
+  .grupo-categorias {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .grupo-categorias button {
+    padding: 8px 10px;
+    font-size: 12.5px;
+    gap: 8px;
+    border-radius: 10px;
+  }
+
+  .grupo-categorias button img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .poicheck {
+    transform: scale(1.1);
+    margin-right: 8px;
+  }
+
+  .contenedorFiltros {
+    gap: 6px;
+  }
+}
+/* 🪟 Panel informativo inferior (POI) */
+.bottom-sheet {
+  position: fixed;
+  bottom: -50%;
+  left: 0;
+  right: 0;
+  background: #1e1e1e;
+  color: #f0f0f0;
+  border-radius: 12px 12px 0 0;
+  transition: bottom 0.3s ease;
+  z-index: 300;
+  max-height: 50vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.bottom-sheet.visible {
+  bottom: 0;
+}
+.bottom-sheet.expandido {
+  top: 0;
+  bottom: 0;
+  border-radius: 0;
+  max-height: 100vh;
+  height: 100vh;
+}
+
+/* 📎 Grip superior decorativo */
+.grip {
+  width: 40px;
+  height: 6px;
+  background: #2a2a2a;
+  border-radius: 3px;
+  margin: 10px auto;
+  cursor: grab;
+}
+
+/* 📄 Contenido del POI */
+.contenido-poi {
+  padding: 15px 20px;
+  max-height: calc(50vh - 60px);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+.bottom-sheet.expandido .contenido-poi {
+  max-height: calc(100vh - 160px);
+  padding-bottom: 80px;
+}
+.contenido-poi h2 {
+  color: #66ccff;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.contenido-poi a {
+  color: #C5F900;
+  text-decoration: none;
+  font-weight: 500;
+}
+.contenido-poi a:hover {
+  color: #A6DF00;
+  text-decoration: underline;
+}
+
+/* ❌ Botón cerrar panel */
+.btn-cerrar {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  z-index: 350;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-cerrar img {
+  width: 22px;
+  height: 22px;
+  filter: invert(100%);
+}
+
+/* 🔼 Botón expandir panel */
+.expandir-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  z-index: 350;
+}
+.expandir-btn img {
+  width: 22px;
+  height: 22px;
+  filter: invert(100%);
+}
+
+/* 📱 Responsive: mejora táctil y visual */
+@media (max-width: 600px) {
+  .bottom-sheet {
+    max-height: 60vh;
+  }
+
+  .contenido-poi {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .contenido-poi h2 {
+    font-size: 18px;
+  }
+
+  .btn-cerrar img,
+  .expandir-btn img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .grip {
+    width: 32px;
+    height: 5px;
+  }
+}
+.acciones-poi {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  gap: 10px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  flex-wrap: wrap; /* Por si hay más acciones en móvil */
+}
+
+.accion-btn {
+  background: none;
+  border: none;
+  padding: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+.accion-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.accion-btn:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.accion-btn img {
+  width: 24px;
+  height: 24px;
+  filter: invert(100%);
+}
+
+/* 📱 Responsive para iconos y tacto */
+@media (max-width: 600px) {
+  .accion-btn {
+    padding: 12px;
+  }
+  .accion-btn img {
+    width: 20px;
+    height: 20px;
+  }
+}
+/* 📦 Menú emergente general */
+.menu-emergente {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px; /* previene exceso en tablets */
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 15px 20px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 350;
+  box-sizing: border-box;
+}
+.menu-emergente.visible {
+  display: flex;
+}
+
+/* 🗺️ Guía OSM */
+.guia-osm {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-size: 15px;
+  font-family: 'Segoe UI', sans-serif;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+.guia-osm ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 8px 0;
+}
+.guia-osm li {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ❌ Botón cerrar contribución */
+.cerrarMenuContribuir {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cerrarMenuContribuir img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%);
+}
+
+/* 🔘 Botón lateral flotante */
+.btnLateral {
+  width: 42px;
+  height: 42px;
+  padding: 8px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btnLateral img {
+  width: 24px;
+  height: 24px;
+  filter: invert(100%);
+}
+
+/* 📱 Responsive para móviles */
+@media (max-width: 600px) {
+  .menu-emergente {
+    bottom: 100px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .guia-osm {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .guia-osm li {
+    gap: 6px;
+    font-size: 13.5px;
+  }
+
+  .cerrarMenuContribuir img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .btnLateral {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+  }
+
+  .btnLateral img {
+    width: 22px;
+    height: 22px;
+  }
+}
+/* 🔘 Botón lateral individual */
+.btnLateral {
+  width: 48px;
+  height: 48px;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  box-shadow: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.btnLateral img {
+  width: 24px;
+  height: 24px;
+  filter: invert(100%);
+  opacity: 1;
+}
+.btnLateral:active {
+  transform: scale(0.95);
+}
+
+/* 🔡 Botón con texto debajo */
+.bloque-boton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.bloque-boton span {
+  font-size: 11px;
+  color: #f0f0f0;
+  text-align: center;
+  line-height: 1.3;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 500;
+}
+
+/* 🌀 Feedback táctil suave */
+.bloque-boton:active {
+  transform: scale(0.97);
+  opacity: 0.8;
+}
+
+/* 📱 Responsive para pantallas pequeñas */
+@media (max-width: 600px) {
+  .btnLateral {
+    width: 44px;
+    height: 44px;
+    padding: 4px;
+  }
+  .btnLateral img {
+    width: 22px;
+    height: 22px;
+  }
+  .bloque-boton span {
+    font-size: 10px;
+  }
+}
+/* 📋 Etiquetas con íconos */
+.menu-emergente label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  margin-top: 10px;
+}
+
+.menu-emergente label img {
+  width: 18px;
+  height: 18px;
+  filter: invert(100%);
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* 🖊️ Inputs y Selects */
+.menu-emergente input,
+.menu-emergente select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  margin-top: 6px;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.menu-emergente input::placeholder,
+.menu-emergente select::placeholder {
+  color: #bbbbbb;
+}
+
+.menu-emergente input:focus,
+.menu-emergente select:focus {
+  outline: none;
+  border-color: #66ccff;
+  background-color: #2a2a2a;
+}
+
+/* 📱 Responsive para pantallas pequeñas */
+@media (max-width: 600px) {
+  .menu-emergente label {
+    font-size: 13.5px;
+    gap: 6px;
+  }
+
+  .menu-emergente label img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .menu-emergente input,
+  .menu-emergente select {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+}
+/* 🌠 Panel genérico emergente (oculto por defecto) */
+.menu-emergente {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px; /* límite para tablets y escritorio */
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 15px 20px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 350;
+  box-sizing: border-box;
+}
+.menu-emergente.visible {
+  display: flex;
+}
+
+/* ❌ Botón cerrar flotante */
+.menu-emergente .btnVolverPanel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+.menu-emergente .btnVolverPanel:hover {
+  transform: rotate(90deg);
+}
+.menu-emergente .btnVolverPanel img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%);
+  display: block;
+}
+
+/* 🏷️ Etiquetas con íconos */
+.menu-emergente label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.menu-emergente label img {
+  width: 18px;
+  height: 18px;
+  filter: invert(100%);
+}
+
+/* 🔍 Bloque búsqueda contextual */
+.menu-emergente .busqueda-wrap {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.menu-emergente input[type="text"] {
+  flex: 1;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  font-size: 15px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+.menu-emergente input::placeholder {
+  color: #bbb;
+}
+.menu-emergente input:focus {
+  outline: none;
+  border-color: #66ccff;
+  background-color: #2a2a2a;
+}
+
+/* 🔴 Botón buscar dirección */
+.menu-emergente #btnBuscarDireccion {
+  padding: 12px 20px;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  border: 1px solid #bb0e26;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.menu-emergente #btnBuscarDireccion:hover {
+  background-color: #2a2a2a;
+}
+.menu-emergente #btnBuscarDireccion:active {
+  background-color: #3a0f1f;
+}
+
+/* 📋 Resultados de búsqueda */
+.menu-emergente #resultadosNominatim {
+  margin-top: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 📱 Ajustes responsive para pantallas ≤600px */
+@media (max-width: 600px) {
+  .menu-emergente {
+    bottom: 100px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .menu-emergente label {
+    font-size: 13.5px;
+    gap: 6px;
+  }
+
+  .menu-emergente label img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .menu-emergente input[type="text"] {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .menu-emergente #btnBuscarDireccion {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .menu-emergente .btnVolverPanel img {
+    width: 18px;
+    height: 18px;
+  }
+}
+/* 🔗 Bloque para enlaces geo / Google Maps */
+.menu-emergente .bloque-enlace {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-emergente .bloque-enlace label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.menu-emergente .bloque-enlace input {
+  padding: 12px 14px;
+  font-size: 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.menu-emergente .bloque-enlace button {
+  padding: 10px 16px;
+  font-size: 15px;
+  background-color: #384051;
+  color: #f0f0f0;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.menu-emergente .bloque-enlace button:hover {
+  background-color: #4a5568;
+}
+.menu-emergente .bloque-enlace label {
+  font-size: 13.5px;
+}
+
+.menu-emergente .bloque-enlace input {
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.menu-emergente .bloque-enlace button {
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+/* 🔘 Botón flotante pegado visualmente a la barra */
+.toggle-botonera {
+  position: fixed;
+  top: 60px;
+  right: 12px;
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 10px 10px 0 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 300;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.toggle-botonera img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%);
+}
+
+/* 🧊 Barra vertical unida al botón con animación tipo despliegue */
+.barra-lateral {
+  position: fixed;
+  top: calc(60px + 48px);
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 6px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(3px);
+  border-radius: 0 0 10px 10px;
+  box-sizing: border-box;
+  width: 48px;
+  z-index: 300;
+  transform-origin: top center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* 🔘 Botones individuales */
+.barra-lateral button {
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.12);
+  border: none;
+  border-radius: 50%;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.barra-lateral button img {
+  width: 18px;
+  height: 18px;
+  filter: invert(100%);
+}
+.barra-lateral button:active {
+  background: rgba(255,255,255,0.2);
+}
+
+/* 🚦 Estados de visibilidad */
+.barra-lateral.oculta {
+  transform: scaleY(0);
+  opacity: 0;
+  pointer-events: none;
+}
+.barra-lateral.activa {
+  transform: scaleY(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 🧠 Modo zurdo */
+body.modo-zurdo .toggle-botonera {
+  left: 12px;
+  right: unset;
+}
+body.modo-zurdo .barra-lateral {
+  left: 12px;
+  right: unset;
+}
+
+/* 📱 Responsive para móviles */
+@media (max-width: 600px) {
+  .toggle-botonera {
+    top: 48px;
+    width: 44px;
+    height: 44px;
+  }
+  .barra-lateral {
+    top: calc(48px + 44px);
+    width: 44px;
+    padding: 6px;
+  }
+  .barra-lateral button {
+    width: 34px;
+    height: 34px;
+  }
+  .barra-lateral button img {
+    width: 16px;
+    height: 16px;
+  }
+}
+/* 🎨 Apariencia base del panel de capas */
+.leaflet-control-layers-expanded {
+  background-color: #1e1e1e;
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+/* 🔕 Oculta el botón de toggle original de Leaflet */
+.leaflet-control-layers-toggle {
+  display: none !important;
+}
+
+/* 📍 Panel flotante centrado en pantalla */
+.leaflet-control-layers.leaflet-control-layers-expanded {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  background-color: #1e1e1e !important;
+  color: #fff !important;
+  border: 2px solid #ffffff55;
+  border-radius: 12px;
+  padding: 16px;
+  z-index: 1200;
+  font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* 📱 Ajustes responsive para pantallas pequeñas */
+@media (max-width: 600px) {
+  .leaflet-control-layers.leaflet-control-layers-expanded {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+/* 🎭 Animación de entrada opcional */
+.leaflet-control-layers.leaflet-control-layers-expanded.inactivo {
+  transform: translate(-50%, -60%) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+}
+.leaflet-control-layers.leaflet-control-layers-expanded.activo {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 🖥️ Visor a pantalla completa */
+.visor-full {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #101010;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+}
+
+.visor-full.hidden {
+  display: none;
+}
+
+.visor-barra {
+  background-color: #1e1e1e;
+  color: #66ccff;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.visor-barra button {
+  background: none;
+  border: none;
+  color: #f0f0f0;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+.visor-barra button:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+#iframeWeb {
+  flex-grow: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+#buscadorPOI {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  background-color: #1e1e1e;
+  box-sizing: border-box;
+}
+
+/* 🔍 Icono dentro del input */
+.input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 180px;
+  max-width: 300px;
+}
+
+.input-wrapper .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  pointer-events: none;
+  font-size: 16px;
+}
+
+.input-wrapper input {
+  width: 82%;
+  padding: 10px 14px 10px 36px;
+  font-size: 15px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* 🟥 Botón rojo: Buscar seleccionados */
+.btnBuscarPanel {
+  background-color: #bb0e26;
+  color: #ffffff;
+  border: none;
+  padding: 10px 14px;
+  font-size: 15px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-family: 'Segoe UI', sans-serif;
+  transition: background-color 0.2s ease;
+  min-width: 180px;
+  flex-shrink: 0;
+}
+
+.btnBuscarPanel:hover {
+  background-color: #a00c20;
+}
+
+/* 🟫 Botón gris: Limpiar selección */
+.btnSecundario {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 14px;
+  font-size: 15px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-family: 'Segoe UI', sans-serif;
+  transition: background-color 0.2s ease;
+  min-width: 180px;
+  flex-shrink: 0;
+}
+
+.btnSecundario:hover {
+  background-color: #3a3a3a;
+}
+
+/* 📱 Responsive para móviles */
+@media (max-width: 600px) {
+  #buscadorPOI {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .input-wrapper,
+  .btnBuscarPanel,
+  .btnSecundario {
+    width: 100%;
+  }
+
+  .input-wrapper input {
+    font-size: 14px;
+    padding: 10px 12px 10px 36px;
+  }
+
+  .btnBuscarPanel,
+  .btnSecundario {
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+}
+/* 🔽 Contenedor de sugerencias debajo del input */
+#sugerenciasBusqueda {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #1e1e1e;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* 📄 Ítems individuales de sugerencia */
+.sugerencia-item {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #f0f0f0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sugerencia-item:hover {
+  background-color: #2a2a2a;
+}
+
+/* 📂 Botón dentro de sugerencia */
+.sugerencia-item button {
+  background-color: #384051;
+  color: #f0f0f0;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'Segoe UI', sans-serif;
+  transition: background-color 0.2s ease;
+}
+
+.sugerencia-item button:hover {
+  background-color: #4a5568;
+}
+.opcion-switch {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.switch-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  color: #f0f0f0;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.switch-label input[type="checkbox"] {
+  display: none;
+}
+
+.switch-slider {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background-color: #555;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.switch-label input[type="checkbox"]:checked + .switch-slider {
+  background-color: #bb0e26;
+}
+
+.switch-label input[type="checkbox"]:checked + .switch-slider::before {
+  transform: translateX(18px);
+}
+.btnGuardarPreferencias {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background-color: #2a2a2a;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  width: 100%;
+}
+/* 🔧 Panel de configuración avanzada */
+#panelBusquedaAvanzada {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 15px 20px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 350;
+  box-sizing: border-box;
+}
+
+#panelBusquedaAvanzada.visible {
+  display: flex;
+}
+
+#panelBusquedaAvanzada h3 {
+  font-size: 15px;
+  color: #66ccff;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* 📏 Slider de radio */
+#sliderRadioBusqueda {
+  width: 100%;
+  margin-top: 6px;
+}
+
+#valorRadio {
+  text-align: right;
+  font-weight: bold;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+/* 🧩 Interruptores visuales */
+.opcion-switch {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.switch-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  color: #f0f0f0;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.switch-label input[type="checkbox"] {
+  display: none;
+}
+
+.switch-slider {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background-color: #555;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.switch-label input[type="checkbox"]:checked + .switch-slider {
+  background-color: #bb0e26;
+}
+
+.switch-label input[type="checkbox"]:checked + .switch-slider::before {
+  transform: translateX(18px);
+}
+
+/* 💾 Botón guardar */
+.btnGuardarPreferencias {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background-color: #2a2a2a;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* ❌ Botón cerrar flotante */
+.btnVolverPanel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  border: none;
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  transition: background-color 0.3s ease;
+}
+
+.btnVolverPanel img {
+  width: 22px;
+  height: 22px;
+  filter: invert(100%);
+}
+
+.btnVolverPanel:hover {
+  background-color: #384051;
+}
+
+.toast {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #323232;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 12px;
+  position: fixed;
+  z-index: 9999;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: visibility 0s, opacity 0.5s ease-in-out;
+  opacity: 0;
+}
+
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+}.btn-quitar {
+  background-color: rgba(255, 255, 255, 0.1); /* fondo sutil */
+  color: white;                               /* ❌ en blanco */
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  margin-left: 8px;
+  border-radius: 4px;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+  transition: background-color 0.2s ease;
+}
+
+.btn-quitar:hover {
+  background-color: rgba(255, 255, 255, 0.25); /* más visible al pasar */
+}
+.bloque-config {
+  margin-top: 12px;
+  padding: 10px;
+  background-color: #222;
+  border-radius: 8px;
+  color: white;
+}
+
+.bloque-config.oculto {
+  display: none;
+}
+.accionesCompactas {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btnIcono {
+  flex: 1;
+  background-color: #1e1e1e;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  color: #ffffff; /* ✅ texto blanco */
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btnIcono img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100%);
+}
+
+.btnRojo {
+  background-color: #bb0e26;
+  border-color: #bb0e26;
+  color: #ffffff; /* ✅ texto blanco también en el rojo */
+}
+
+.btnRojo:hover {
+  background-color: #a00c20;
+}
+
+/* Oculta elementos dinámicamente */
+.oculto {
+  display: none;
+}
+
+/* Bloque de filtros activos */
+.bloque-filtros {
+  margin-top: 12px;
+  padding: 10px;
+  background-color: #222;
+  border-radius: 8px;
+  color: white;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.bloque-filtros ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 8px;
+}
+
+.bloque-filtros li {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.btn-quitar {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: background-color 0.2s ease;
+}
+
+.btn-quitar:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+.bloque-config.oculto {
+  display: none;
+}
+.bloque-config.visible {
+  display: block;
+  margin-top: 10px;
+}
+.bloque {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  padding-left: 20px;
+}
+
+.bloque.visible {
+  display: flex;
+}
+
+/* 🔘 Contenedor del interruptor */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+}
+
+/* 🚫 Ocultar el checkbox original */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* 🎨 Estilo del slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: background-color 0.4s;
+  border-radius: 34px;
+}
+
+/* ⚪ Círculo deslizante */
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: transform 0.4s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔴 Estado activado */
+.switch input:checked + .slider {
+  background-color: #e53935; /* Rojo intenso */
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(24px);
+}
+
+/* 🖱️ Efecto hover opcional */
+.slider:hover {
+  background-color: #bdbdbd;
+}
+
+/* 🌙 Modo oscuro opcional */
+@media (prefers-color-scheme: dark) {
+  .slider {
+    background-color: #555;
+  }
+
+  .switch input:checked + .slider {
+    background-color: #ff5252;
+  }
+}
+
+/* 📢 Toast de aviso */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 9999;
+}
+
+.toast.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toast.oculto {
+  opacity: 0;
+}

@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExMaps</title>
+  
+  <!-- Estilos -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Leaflet para mapas -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.5.1/gpx.min.js"></script>
+  <!-- Geocoder plugin para Nominatim -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+</head>
+<body>
+    
+    <!-- botón menú flotante -->
+        <button id="toggleBotonera" class="toggle-botonera" title="Mostrar/Ocultar barra">
+  <img src="icons/ui/fi-sr-brain-circuit.svg" alt="Toggle" />
+</button>
+    
+    <!-- botonera lateral  -->
+  <div id="barraControles" class="barra-lateral">
+  <!-- 📍 Buscar lugar (Nominatim) -->
+  <div class="bloque-boton">
+    <button id="btnBuscarLugar" title="Buscar lugar" class="btnLateral">
+      <img src="icons/ui/fi-sr-land-location.svg" alt="Buscar lugar" />
+    </button>
+    <span>Ubicación</span>
+  </div>
+  <!-- capas -->
+<div class="bloque-boton">
+  <button id="btnPanelCapas" class="btnLateral" title="Capas del mapa">
+    <img src="icons/ui/fi-sr-layers.svg" alt="Capas">
+  </button>
+  <span>Capas</span>
+</div>
+
+  <!-- ➕ Zoom in  -->
+  <div class="bloque-boton">
+    <button id="btnZoomIn" title="Acercar mapa" class="btnLateral">
+      <img src="icons/ui/fi-sr-zoom-in.svg" alt="Zoom +" />
+    </button>
+     <span>zoom</span>
+  </div>
+ 
+
+  <!-- ➖ Zoom out  -->
+  <div class="bloque-boton">
+    <button id="btnZoomOut" title="Alejar mapa" class="btnLateral">
+      <img src="icons/ui/fi-sr-zoom-out.svg" alt="Zoom -" />
+    </button>
+  </div>
+
+  <!-- 🍔 Categorías -->
+  <div class="bloque-boton">
+    <button id="menuBtn" title="Abrir panel" class="btnLateral">
+      <img src="icons/ui/fi-sr-category.svg" alt="Menú" />
+    </button>
+    <span>Categorías</span>
+  </div>
+
+  
+  <!-- 🔄 Actualizar búsqueda -->
+  <div class="bloque-boton">
+    <button id="btnBusquedaDirecta" title="Buscar desde mapa" class="btnLateral">
+      <img src="icons/ui/fi-sr-search.svg" alt="Buscar desde mapa" />
+    </button>
+    <span>Actualizar</span>
+  </div>
+  
+  <!--  Botón Limpiar mapa -->
+<div class="bloque-boton">
+  <button title="Limpiar mapa" class="btnLateral" onclick="limpiarMapa()">
+    <img src="icons/ui/fi-sr-eraser.svg" alt="Limpiar mapa" />
+  </button>
+  <span>Limpiar</span>
+</div>
+
+<!-- ajustes  -->
+<div class="bloque-boton">
+  <button id="btnAjustesMapa" title="Ajustes del mapa" class="btnLateral">
+    <img src="icons/ui/fi-sr-square-ellipsis.svg" alt="Ajustes" />
+  </button>
+  <span>Opciones</span>
+</div>
+<!-- ❔ Botón de ayuda -->
+<div class="bloque-boton">
+  <button title="Abrir ayuda en el navegador" class="btnLateral" onclick="window.open('https://tronpoonpo.blogspot.com/p/exmaps-pwa.html', '_blank')">
+    <img src="icons/ui/fi-sr-question-square.svg" alt="Ayuda sobre la app" />
+  </button>
+  <span>Ayuda</span>
+
+</div>
+  </div>
+
+
+<!-- Menú emergente que se abre al pulsar el botón de ajustes -->
+<div id="menuAjustes" class="menu-emergente">
+
+  <button class="cerrarMenu" onclick="cerrarAjustes()">
+    <img src="icons/ui/fi-sr-cross-small.svg" alt="Cerrar ajustes" />
+  </button>
+
+  <!-- Sección de usuario -->
+  <button onclick="abrirPerfilUsuario()" class="btn-opcion">
+    <img src="icons/ui/fi-sr-user-gear.svg" alt="Perfil de usuario" />
+    Perfil de usuario
+  </button>
+
+<!-- Botón Exportar -->
+<button id="btnExportar" class="btn-opcion">
+  <img src="icons/ui/fi-sr-folder-download.svg" alt="Exportar" />
+  Exportar
+</button>
+
+<!-- Bloque desplegable -->
+<div id="bloqueExportar" class="bloque oculto">
+  <button onclick="exportarMapaKML(construirPoisPorCategoria())">
+    <img src="icons/ui/fi-sr-folder-download.svg" alt="Exportar mapa KML" />
+    <span>Exportar todos los POIs del mapa</span>
+  </button>
+
+  <button onclick="exportarPOIsSeleccionados()">
+    <img src="icons/ui/fi-sr-file-download.svg" alt="Exportar seleccionados KML" />
+    <span>Exportar capa personalizada</span>
+  </button>
+</div>
+
+  <!-- Subir ruta GPX -->
+  <button onclick="document.getElementById('bloqueSubidaGPX').classList.toggle('visible')" class="btn-opcion">
+    <img src="icons/ui/fi-sr-upload.svg" alt="Subir GPX" />
+    Subir ruta GPX
+  </button>
+
+  <div id="bloqueSubidaGPX" class="bloque-config oculto">
+    <label for="inputGPX">Selecciona archivo GPX:</label>
+    <input type="file" id="inputGPX" accept=".gpx" />
+  </div>
+  <button onclick="borrarRutaGPX()" class="btn-opcion">
+  <img src="icons/ui/fi-sr-trash.svg" alt="Borrar GPX" />
+  Borrar ruta GPX
+</button>
+
+<!-- 📑 Menú compartir ubicación del centro del mapa -->
+<button onclick="document.getElementById('bloqueCompartir').classList.toggle('visible')" class="btn-opcion">
+  <img src="icons/ui/fi-sr-share.svg" alt="Compartir" />
+  Compartir ubicación centro del mapa
+</button>
+
+<div id="bloqueCompartir" class="bloque-config oculto">
+  <button onclick="compartirTextoCentroMapa()">
+    <img src="icons/ui/fi-sr-blog-text.svg" alt="Texto POI" />
+    <span>Compartir como texto</span>
+  </button>
+
+  <button onclick="compartirPosicionCentroMapa()">
+    <img src="icons/ui/fi-sr-map-marker.svg" alt="Ubicación POI" />
+    <span>Compartir posición en otra app</span>
+  </button>
+
+  <button onclick="abrirEditorOSMDesdeCentro()">
+    <img src="icons/ui/fi-sr-code-editing.svg" alt="Editor OSM" />
+    <span>Editar directamente en OpenStreetMap</span>
+  </button>
+
+  <button onclick="añadirNotaOSMDesdeCentro()">
+    <img src="icons/ui/fi-sr-blog-pencil.svg" alt="Añadir nota OSM" />
+    <span>Añadir sugerencia como nota pública</span>
+  </button>
+
+  <button onclick="abrirVisorWebDesdeCentro('streetview')">
+    <img src="icons/ui/fi-sr-street-view.svg" alt="Street View" />
+    <span>Ver en Street View</span>
+  </button>
+
+  <button onclick="abrirVisorWebDesdeCentro('mapillary')">
+    <img src="icons/ui/fi-sr-camera-viewfinder.svg" alt="Mapillary" />
+    <span>Ver en Mapillary</span>
+  </button>
+
+  <button onclick="abrirVisorWebDesdeCentro('peakfinder')">
+    <img src="icons/ui/fi-sr-mountains.svg" alt="PeakFinder" />
+    <span>Ver en PeakFinder</span>
+  </button>
+</div>
+
+  <!-- Configuración avanzada -->
+  <button onclick="abrirConfiguracionAvanzada()" class="btn-opcion">
+    <img src="icons/ui/fi-sr-settings.svg" alt="Configuración avanzada" />
+    Elementos visuales 
+  </button>
+</div>
+
+
+<!-- 📍 Panel búsqueda Nominatim -->
+<div id="panelResultadosNominatim" class="menu-emergente">
+
+  <!-- ❌ Botón cerrar -->
+  <button class="btnVolverPanel" onclick="cerrarPanelResultados()">
+    <img src="icons/ui/fi-sr-cross-small.svg" alt="Cerrar panel" />
+  </button>
+
+  <!-- 🧭 Título de búsqueda -->
+  <label>
+    <img src="icons/ui/fi-sr-land-location.svg" alt="Icono ubicación" />
+    Buscar ubicación
+  </label>
+
+  <!-- 🔍 Barra de búsqueda por dirección -->
+  <div class="busqueda-wrap">
+    <input type="text" id="inputDireccion" placeholder="📍 Escribe una dirección..." />
+    <button id="btnBuscarDireccion">Buscar</button>
+  </div>
+
+  <!-- 🔗 Campo para enlaces geo o Google Maps -->
+  <div class="bloque-enlace">
+    <label for="inputEnlaceGeo">
+      <img src="icons/ui/fi-sr-link-alt.svg" alt="Icono enlace" />
+      Enlace de ubicación / coordenadas directas 
+    </label>
+    <input type="text" id="inputEnlaceGeo" placeholder="Pega un enlace geo: o Google Maps" />
+    <button id="btnProcesarEnlaceGeo">Procesar enlace</button>
+  </div>
+<!-- 📡 Seguimiento GPS -->
+<div class="bloque-switch">
+  <label for="switchGPS">
+    <img src="icons/ui/fi-sr-location-crosshairs.svg" alt="Icono GPS" />
+    Activar seguimiento GPS
+  <label class="switch">
+  <input type="checkbox" id="switchGPS" onchange="toggleSeguimientoGPSDesdeSwitch(this)">
+  <span class="slider"></span>
+</label>
+</div>
+
+<!-- 🧭 Avisos tipo toast -->
+<div id="toastAviso" class="toast oculto"></div>
+
+  <!-- 📋 Título de resultados -->
+  <label>
+    <img src="icons/ui/fi-sr-list.svg" alt="Icono lista" />
+    Resultados
+  </label>
+
+  <!-- 📍 Área de resultados -->
+  <div id="resultadosNominatim"></div>
+
+</div>
+<!-- Panel flotante para el perfil de usuario -->
+<div id="menuPerfilUsuario" class="menu-emergente">
+  <button class="btnVolverPanel cerrarMenu" onclick="cerrarPerfilUsuario()">
+    <img src="icons/ui/fi-sr-cross-small.svg" alt="Cerrar panel" />
+  </button>
+
+  <h3>Preferencias</h3>
+
+  <!-- 🌍 Ubicación por defecto -->
+  <div class="bloque-config">
+    <label for="ubicacionDefecto">
+      <img src="icons/ui/fi-sr-home-location-alt.svg" alt="Ubicación" />
+      Ubicación por defecto
+    </label>
+    <input type="text" id="ubicacionDefecto" placeholder="Ej. Sevilla, España" />
+    <small id="ubicacionConfirmada"></small>
+
+    <!-- 🧭 Nueva opción: usar última ubicación -->
+   <div class="opcion-switch">
+  <label class="switch-label" for="usarUltimaUbicacion">
+    Usar última ubicación mostrada 
+    <input type="checkbox" id="usarUltimaUbicacion" />
+    <span class="switch-slider"></span>
+  </label>
+</div>
+  </div>
+
+  <!-- 🖼️ Modo de uso -->
+  <div class="bloque-config">
+    <label for="modoUso">
+      <img src="icons/ui/fi-sr-mobile-hand.svg" alt="Modo de uso" />
+      Modo de uso
+    </label>
+    <select id="modoUso">
+      <option value="diestro">Diestro</option>
+      <option value="zurdo">Zurdo</option>
+    </select>
+  </div>
+
+  <!-- 🗺️ Mapa por defecto -->
+  <div class="bloque-config">
+    <label for="mapaDefecto">
+      <img src="icons/ui/fi-sr-map.svg" alt="Mapa por defecto" />
+      Mapa por defecto
+    </label>
+    <select id="mapaDefecto">
+      <option value="ultimo">Mantener último mapa usado</option>
+      <option value="satellite">Satélite</option>
+      <option value="callejero">Callejero</option>
+      <option value="topografico">Topográfico</option>
+    </select>
+  </div>
+
+  <!-- ✅ Botón guardar -->
+  <button onclick="guardarPreferenciasUsuario()" class="btnGuardarPreferencias">
+    ✅ Guardar preferencias
+  </button>
+</div>
+<!-- 🔧 Panel de Configuración Avanzada -->
+<div id="panelBusquedaAvanzada" class="menu-emergente hidden">
+  <!-- Botón cerrar -->
+  <button class="btnVolverPanel cerrarMenu" onclick="cerrarConfiguracionAvanzada()">
+    <img src="icons/ui/fi-sr-cross-small.svg" alt="Cerrar panel" />
+  </button>
+
+  <h3>Elementos visuales</h3>
+
+ 
+  <!-- 🎯 Mostrar icono central del mapa -->
+<div class="opcion-switch">
+  <label class="switch-label">
+    Mostrar icono central
+    <input type="checkbox" id="mostrarIconoCentro">
+    <span class="switch-slider"></span>
+  </label>
+</div>
+<!-- 📐 Tamaño del icono central -->
+<label for="sliderTamanoIconoCentro">
+  <img src="icons/ui/cur_cen.svg" alt="Centro" />
+  Tamaño del icono: <span id="valorTamanoIcono">32</span> px
+</label>
+<input type="range" id="sliderTamanoIconoCentro" min="16" max="64" step="2" value="32" />
+
+  <!-- 💾 Botón guardar -->
+  <button onclick="guardarConfiguracionBusqueda()" class="btnGuardarPreferencias">
+    💾 Guardar configuración
+  </button>
+</div>
+
+<div id="toastConfirmacion" class="toast">✅ Configuración guardada y centro actualizado</div>
+
+  <!-- 📂 Panel lateral -->
+  <div id="sidebar" class="sidebar hidden">
+    <div id="logoExMaps">
+  <img src="icons/logo512.png" alt="Logo ExMaps" />
+</div>  
+    <!-- 🏷️ Título de la app -->
+    <div id="nombreApp">Puntos de Interés</div> 
+   
+        <!-- 🧭 Panel principal de selección de categorías -->
+<div id="panelCategorias" class="subpanel visible">
+
+  <!-- Botón volver -->
+  <button class="btnVolverPanel soloIcono" onclick="cerrarPanelCategorias()">
+    <img src="icons/ui/fi-sr-arrow-small-left.svg" alt="Cerrar panel">
+  </button>
+  <h2>Explorar categorías</h2>
+<div id="buscadorPOI">
+  <div class="input-wrapper">
+    <span class="icon">🔍</span>
+    <input type="text" id="inputBusquedaPOI" placeholder="Buscar POI..." />
+    <div id="sugerenciasBusqueda"></div>
+  </div>
+ <div class="accionesCompactas">
+  <button id="btnBuscarSeleccionados" class="btnIcono btnRojo">
+    <img src="icons/ui/fi-sr-search.svg" alt="Buscar">
+    <span>Buscar</span>
+  </button>
+  <button id="btnLimpiarSeleccion" class="btnIcono">
+    <img src="icons/ui/fi-sr-eraser.svg" alt="Limpiar">
+    <span>Limpiar</span>
+  </button>
+</div>
+  <button id="btnToggleConfigBusqueda" class="btnSecundario">
+  ⚙️ Configurar de búsqueda
+</button>
+<div id="bloqueConfigBusqueda" class="bloque-config oculto">
+  <label for="sliderRadioBusqueda">
+    Radio de búsqueda: <span id="valorRadio">1000</span> metros
+  </label>
+  <input type="range" id="sliderRadioBusqueda" min="100" max="10000" step="100" value="5000" />
+
+  <div class="opcion-switch">
+    <label class="switch-label">
+      Mantener resultados anteriores
+      <input type="checkbox" id="mantenerResultados">
+      <span class="switch-slider"></span>
+    </label>
+  </div>
+
+  <div class="opcion-switch">
+    <label class="switch-label">
+      Búsqueda dinámica al mover el mapa
+      <input type="checkbox" id="busquedaDinamica">
+      <span class="switch-slider"></span>
+    </label>
+  </div>
+
+  <button onclick="guardarConfiguracionBusqueda()" class="btnGuardarPreferencias">
+    💾 Guardar configuración
+  </button>
+</div>
+<!-- ✅ Botón para mostrar filtros activos -->
+<button id="btnToggleFiltrosActivos" class="btnSecundario oculto">
+  🧭 Mostrar filtros activos
+</button>
+
+<!-- ✅ Bloque de filtros activos -->
+<div id="filtrosActivos" class="bloque-filtros oculto">
+  <h4>🧭 Filtros activos:</h4>
+  <ul id="listaFiltros"></ul>
+</div>
+
+</div>
+
+  <!-- Categorías -->
+  <div class="grupo-categorias">
+    <button onclick="mostrarCategoria('alojamiento')">
+      <img src="icons/ui/fi-sr-bed.svg" alt="Alojamiento">
+      <span>Alojamiento</span>
+    </button>
+
+    <button onclick="mostrarCategoria('comodidades')">
+      <img src="icons/ui/fi-sr-faucet.svg" alt="Comodidades">
+      <span>Comodidades</span>
+    </button>
+
+    <button onclick="mostrarCategoria('emergencias')">
+      <img src="icons/ui/fi-sr-hospital.svg" alt="Emergencias">
+      <span>Emergencias</span>
+    </button>
+
+    <button onclick="mostrarCategoria('naturaleza')">
+      <img src="icons/ui/fi-sr-mountain.svg" alt="Naturaleza">
+      <span>Naturaleza</span>
+    </button>
+
+    <button onclick="mostrarCategoria('ocio_turismo')">
+      <img src="icons/ui/fi-sr-castle.svg" alt="Ocio y turismo">
+      <span>Ocio y turismo</span>
+    </button>
+
+    <button onclick="mostrarCategoria('servicios')">
+      <img src="icons/ui/fi-sr-tools.svg" alt="Servicios">
+      <span>Servicios</span>
+    </button>
+
+    <button onclick="mostrarCategoria('transporte')">
+      <img src="icons/ui/fi-sr-plane-alt.svg" alt="Transporte">
+      <span>Transporte</span>
+    </button>
+    
+  <button onclick="mostrarCategoria('ciclismo_senderismo')">
+    <img src="icons/ui/fi-sr-route.svg" alt="Ciclismo y senderismo">
+    <span>Ciclismo y senderismo</span>
+  </button>
+
+  </div>
+ 
+</div>
+
+<div id="panelalojamiento" class="subpanel hidden">
+  <button class="btnVolverPanel soloIcono" onclick="volverCategorias()">
+    <img src="icons/ui/fi-sr-arrow-small-left.svg" alt="Volver">
+  </button>
+<h2>
+  <img src="icons/ui/fi-sr-bed.svg" alt="Alojamiento" class="icono-panel">
+  Alojamiento
+</h2>
+   <!-- Botón buscar POIs con icono SVG -->
+  <button class="btnBuscarPanel" id="btnBuscarAlojamiento">
+    <img src="icons/ui/fi-sr-search.svg" alt="Buscar POIs">
+    <span>Buscar POIs</span>
+  </button>
+  <div class="contenedorFiltros">
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="apartment">
+    Apartamento turístico
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="hostel">
+    Albergue / Hostel
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="camp_site">
+    Camping
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="caravan_site">
+    Caravanas
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="chalet">
+    Chalet
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="guest_house">
+    Casa de huéspedes
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="hotel">
+    Hotel
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="motel">
+    Motel
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="wilderness_hut">
+    Refugio básico
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="alpine_hut">
+    Refugio de montaña
+  </label>
+</div>
+</div>
+  <div id="panelciclismo_senderismo" class="subpanel hidden">
+  <!-- 🔙 Botón volver -->
+  <button class="btnVolverPanel soloIcono" onclick="volverCategorias()">
+    <img src="icons/ui/fi-sr-arrow-small-left.svg" alt="Volver" />
+  </button>
+
+  <!-- 🏷️ Título con icono -->
+  <h2>
+    <img src="icons/ui/fi-sr-route.svg" alt="Ciclismo y Senderismo" class="icono-panel" />
+    Ciclismo y Senderismo
+  </h2>
+
+  <!-- 🔍 Botón buscar POIs -->
+  <button class="btnBuscarPanel" id="btnBuscarCiclismoSenderismo">
+    <img src="icons/ui/fi-sr-search.svg" alt="Buscar POIs" />
+    <span>Buscar POIs</span>
+  </button>
+
+  <!-- ✅ Filtros agrupados y organizados -->
+  <div class="contenedorFiltros">
+
+    <!-- 🧭 Señalización -->
+    <label><input type="checkbox" class="poicheck" data-cat="information" data-sub="guidepost"> Poste de ruta</label>
+    <label><input type="checkbox" class="poicheck" data-cat="information" data-sub="guidepost"> Señal guía</label>
+    <label><input type="checkbox" class="poicheck" data-cat="information" data-sub="board"> Panel informativo</label>
+    <label><input type="checkbox" class="poicheck" data-cat="information" data-sub="terminal"> Terminal digital</label>
+
+    <!-- 🚲 Servicios para ciclistas -->
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="bicycle_repair_station"> Reparación bici</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="charging_station"> Punto de carga</label>
+
+    <!-- ⛺ Descanso y refugio -->
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="shelter"> Refugio sencillo</label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="alpine_hut"> Refugio de montaña</label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="wilderness_hut"> Refugio básico</label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="camp_site"> Camping</label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="caravan_site"> Caravanas</label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="picnic_site"> Zona picnic</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="firepit"> Zona fuego(barbacoa)</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="drinking_water"> Agua potable</label>
+
+    <!-- 🏞️ Entorno natural -->
+    <label><input type="checkbox" class="poicheck" data-cat="natural" data-sub="tree"> Árbol destacado</label>
+    <label><input type="checkbox" class="poicheck" data-cat="natural" data-sub="spring"> Manantial</label>
+    <label><input type="checkbox" class="poicheck" data-cat="waterway" data-sub="waterfall"> Cascada</label>
+    <label><input type="checkbox" class="poicheck" data-cat="natural" data-sub="cave_entrance"> Cueva</label>
+    <label><input type="checkbox" class="poicheck" data-cat="natural" data-sub="rock"> Formación rocosa</label>
+    <label><input type="checkbox" class="poicheck" data-cat="natural" data-sub="volcano"> Volcán</label>
+    <label><input type="checkbox" class="poicheck" data-cat="natural" data-sub="peak"> Pico</label>
+    <label><input type="checkbox" class="poicheck" data-cat="natural" data-sub="saddle"> Collado</label>
+    <label><input type="checkbox" class="poicheck" data-cat="natural" data-sub="mountain_pass"> Paso montañoso</label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="viewpoint"> Mirador</label>
+    <label><input type="checkbox" class="poicheck" data-cat="boundary" data-sub="protected_area"> Área protegida</label>
+
+    <!-- 🏥 Emergencia y salud -->
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="hospital"> Hospital</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="pharmacy"> Farmacia</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="doctors"> Centro médico / doctor</label>
+    <label><input type="checkbox" class="poicheck" data-cat="emergency" data-sub="emergency_phone"> Teléfono de emergencia</label>
+
+    <!-- 🏰 Elementos históricos -->
+    <label><input type="checkbox" class="poicheck" data-cat="historic" data-sub="castle"> Castillo</label>
+    <label><input type="checkbox" class="poicheck" data-cat="historic" data-sub="ruins"> Ruinas</label>
+<!-- hecho por el hombre -->
+       <label><input type="checkbox" class="poicheck" data-cat="man_made" data-sub="watermill"> Molino de Agua</label>
+      <label><input type="checkbox" class="poicheck" data-cat="man_made" data-sub="windmill"> Molino de Viento</label>
+    <label><input type="checkbox" class="poicheck" data-cat="man_made" data-sub="survey_point"> Vértice </label>
+  </div>
+</div>
+<div id="panelcomodidades" class="subpanel hidden">
+  <button class="btnVolverPanel soloIcono" onclick="volverCategorias()">
+    <img src="icons/ui/fi-sr-arrow-small-left.svg" alt="Volver">
+  </button>
+ <h2>
+  <img src="icons/ui/fi-sr-faucet.svg" alt="Comodidades" class="icono-panel">
+  Comodidades
+</h2>
+    <!-- Botón buscar POIs con icono SVG -->
+  <button class="btnBuscarPanel" id="panelcomodidades">
+    <img src="icons/ui/fi-sr-search.svg" alt="Buscar POIs">
+    <span>Buscar POIs</span>
+  </button>
+  <div class="contenedorFiltros">
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="drinking_water">
+    Agua potable
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="toilets">
+    Aseos públicos
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="bench">
+    Banco
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="public_bath">
+    Baño público / termal
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="fountain">
+    Fuente
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="recycling">
+    Punto reciclaje
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="shelter">
+    Refugio cómodo
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="lounger">
+    Tumbona
+  </label>
+</div>
+</div>
+
+<div id="panelemergencias" class="subpanel hidden">
+  <button class="btnVolverPanel soloIcono" onclick="volverCategorias()">
+    <img src="icons/ui/fi-sr-arrow-small-left.svg" alt="Volver">
+  </button>
+  <h2>
+  <img src="icons/ui/fi-sr-hospital.svg" alt="Emergencias" class="icono-panel">
+  Emergencias
+</h2>
+     <!-- Botón buscar POIs con icono SVG -->
+  <button class="btnBuscarPanel" id="panelemergencias">
+    <img src="icons/ui/fi-sr-search.svg" alt="Buscar POIs">
+    <span>Buscar POIs</span>
+  </button>
+ <div class="contenedorFiltros">
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="fire_station">
+    Bomberos
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="doctors">
+    Centro médico / doctor
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="emergency" data-sub="defibrillator">
+    Desfibrilador
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="pharmacy">
+    Farmacia
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="hospital">
+    Hospital
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="amenity" data-sub="police">
+    Policía
+  </label>
+  <label>
+   <input type="checkbox" class="poicheck" data-cat="emergency" data-sub="emergency_access_point">
+    Punto de acceso médico
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="emergency" data-sub="emergency_phone">
+    Teléfono de emergencia
+  </label>
+</div>
+</div>
+
+<div id="panelnaturaleza" class="subpanel hidden">
+  <button class="btnVolverPanel soloIcono" onclick="volverCategorias()">
+    <img src="icons/ui/fi-sr-arrow-small-left.svg" alt="Volver">
+  </button>
+ <h2>
+  <img src="icons/ui/fi-sr-mountain.svg" alt="Naturaleza" class="icono-panel">
+  Naturaleza
+</h2>
+   <!-- Botón buscar POIs con icono SVG -->
+  <button class="btnBuscarPanel" id="panelnaturaleza">
+    <img src="icons/ui/fi-sr-search.svg" alt="Buscar POIs">
+    <span>Buscar POIs</span>
+  </button>
+  <div class="contenedorFiltros">
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="cliff">
+    Acantilado
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="boundary" data-sub="protected_area">
+    Área protegida
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="tree">
+    Árbol destacado
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="waterway" data-sub="waterfall">
+    Cascada
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="saddle">
+    Collado
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="cave_entrance">
+    Cueva
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="rock">
+    Formación rocosa
+  </label>
+   <label>
+    <input type="checkbox" class="poicheck" data-cat="leisure" data-sub="botanical_garden">
+    Jardín botánico
+  </label>
+   <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="spring">
+    Manantial
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="tourism" data-sub="viewpoint">
+    Mirador
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="leisure" data-sub="park">
+    Parque
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="mountain_pass">
+    Paso montañoso
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="beach">
+    Playa
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="peak">
+    Pico
+  </label>
+  <label>
+    <input type="checkbox" class="poicheck" data-cat="natural" data-sub="volcano">
+    Volcán
+  </label>
+</div>
+</div>
+
+<div id="panelocio_turismo" class="subpanel hidden">
+  <button class="btnVolverPanel soloIcono" onclick="volverCategorias()">
+    <img src="icons/ui/fi-sr-arrow-small-left.svg" alt="Volver">
+  </button>
+  <h2>
+    <img src="icons/ui/fi-sr-castle.svg" alt="Ocio y turismo" class="icono-panel">
+    Ocio y turismo
+  </h2>
+  <button class="btnBuscarPanel" id="panelocio_turismo">
+    <img src="icons/ui/fi-sr-search.svg" alt="Buscar POIs">
+    <span>Buscar POIs</span>
+  </button>
+
+  <div class="contenedorFiltros">
+       <label><input type="checkbox" class="poicheck" data-cat="historic" data-sub="wayside_shrine"> Altar</label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="attraction"> Atracción turística</label>
+     <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="artwork"> Arte público</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="bar"> Bar</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="biergarten"> Biergarten</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="library"> Biblioteca</label>
+    <label><input type="checkbox" class="poicheck" data-cat="historic" data-sub="castle"> Castillo</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="cafe"> Cafetería</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="cinema"> Cine</label>
+       <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="fast_food"> Comida rápida</label>
+        <label><input type="checkbox" class="poicheck" data-cat="historic" data-sub="wayside_cross"> Cruz histórica</label>
+     <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="sculpture"> Escultura</label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="gallery"> Galería de arte</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="ice_cream"> Heladería</label>
+     <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="place_of_worship"> Iglesia </label>
+    <label><input type="checkbox" class="poicheck" data-cat="historic" data-sub="memorial"> Memorial</label>
+    <label><input type="checkbox" class="poicheck" data-cat="historic" data-sub="monument"> Monumento</label>
+       <label><input type="checkbox" class="poicheck" data-cat="man_made" data-sub="watermill"> Molino de Agua</label>
+      <label><input type="checkbox" class="poicheck" data-cat="man_made" data-sub="windmill"> Molino de Viento</label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="museum"> Museo</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="pub"> Pub / cervecería</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="public_bookcase"> Estantería pública</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="restaurant"> Restaurante</label>
+   <label><input type="checkbox" class="poicheck" data-cat="historic" data-sub="ruins"> Ruinas</label> 
+    <label><input type="checkbox" class="poicheck" data-cat="historic" data-sub="archaeological_site"> Sitio arqueológico</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="theatre"> Teatro</label>
+    <label><input type="checkbox" class="poicheck" data-cat="man_made" data-sub="survey_point"> Vértice </label>
+    <label><input type="checkbox" class="poicheck" data-cat="tourism" data-sub="zoo"> Zoológico</label>
+  </div>
+</div>
+
+
+<div id="paneltransporte" class="subpanel hidden">
+  <button class="btnVolverPanel soloIcono" onclick="volverCategorias()">
+    <img src="icons/ui/fi-sr-arrow-small-left.svg" alt="Volver">
+  </button>
+  <h2>
+    <img src="icons/ui/fi-sr-plane-alt.svg" alt="Transporte" class="icono-panel">
+    Transporte
+  </h2>
+  <button class="btnBuscarPanel" id="btnBuscarTransporte">🔍 Buscar POIs</button>
+
+  <div class="contenedorFiltros">
+    <label><input type="checkbox" class="poicheck" data-cat="aeroway" data-sub="aerodrome"> Aeropuerto</label>
+    <label><input type="checkbox" class="poicheck" data-cat="railway" data-sub="crossing"> Cruce ferroviario</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="parking_entrance"> Entrada a parking</label>
+    <label><input type="checkbox" class="poicheck" data-cat="railway" data-sub="subway_entrance"> Entrada a metro</label>
+    <label><input type="checkbox" class="poicheck" data-cat="railway" data-sub="station"> Estación ferroviaria</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="bus_station"> Estación de bus</label>
+    <label><input type="checkbox" class="poicheck" data-cat="aerialway" data-sub="station"> Estación de teleférico</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="ferry_terminal"> Terminal ferry</label>
+    <label><input type="checkbox" class="poicheck" data-cat="railway" data-sub="level_crossing"> Paso a nivel</label>
+    <label><input type="checkbox" class="poicheck" data-cat="highway" data-sub="bus_stop"> Parada de bus</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="parking"> Parking</label>
+    <label><input type="checkbox" class="poicheck" data-cat="aeroway" data-sub="helipad"> Helipuerto</label>
+  </div>
+</div>
+<div id="panelservicios" class="subpanel hidden">
+  <button class="btnVolverPanel soloIcono" onclick="volverCategorias()">
+    <img src="icons/ui/fi-sr-arrow-small-left.svg" alt="Volver">
+  </button>
+  <h2>
+    <img src="icons/ui/fi-sr-tools.svg" alt="Servicios" class="icono-panel">
+    Servicios
+  </h2>
+  <button class="btnBuscarPanel" id="panelservicios">
+    <img src="icons/ui/fi-sr-search.svg" alt="Buscar POIs">
+    <span>Buscar POIs</span>
+  </button>
+  <div class="contenedorFiltros">
+
+    <!-- 🛒 Comercio -->
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="travel_agency"> Agencia de viajes</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="bank"> Banco</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="bicycle"> Bicicletas</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="doityourself"> Bricolaje / Ferretería</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="post_box"> Buzón</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="butcher"> Carnicería</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="atm"> Cajero automático</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="fuel"> Gasolinera</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="laundry"> Lavandería</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="books"> Librería</label>
+    <label><input type="checkbox" class="poicheck" data-cat="amenity" data-sub="post_office"> Oficina de correos</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="bakery"> Panadería</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="chemist"> Perfumería / Botica</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="organic"> Tienda ecológica</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="convenience"> Tienda de conveniencia</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="sports"> Tienda deportiva</label>
+    <label><input type="checkbox" class="poicheck" data-cat="shop" data-sub="supermarket"> Supermercado</label>
+
+  </div>
+</div>
+
+  </div> <!-- #sidebar -->
+  <!-- 🗺️ Mapa principal -->
+  <div id="map"></div>
+
+ <div id="panelPoi" class="bottom-sheet hidden">
+  <!-- 📎 Grip superior -->
+  <div class="grip"></div>
+
+  <!-- 🔘 Botón cerrar -->
+  <button class="btn-cerrar" id="cerrarPanelPoi" title="Cerrar panel">
+    <img src="icons/ui/fi-sr-cross-small.svg" alt="Cerrar" />
+  </button>
+
+  <!-- 🔼 Botón expandir -->
+  <button class="expandir-btn" id="btnExpandirPanel" title="Expandir panel">
+    <img src="icons/ui/fi-sr-expand.svg" alt="Expandir" />
+  </button>
+
+  <!-- 📄 Contenido del POI -->
+  <div class="contenido-poi">
+    <h2 id="poiNombre">POI</h2>
+    <div id="poiDatos"></div>
+    
+    <!-- 🎯 Botones de funciones -->
+<div class="acciones-poi">
+  <button class="accion-btn" id="btnCompartir" title="Compartir">
+    <img src="icons/ui/fi-sr-share.svg" alt="Compartir" />
+  </button>
+  <button class="accion-btn" id="btnExportar" title="Exportar">
+    <img src="icons/ui/fi-sr-download.svg" alt="Exportar" />
+  </button>
+  <button class="accion-btn" id="btnContribuirPOI" title="Contribuir">
+    <img src="icons/ui/fi-sr-attribution-pencil.svg" alt="Contribuir" />
+  </button>
+  <button class="accion-btn" id="btnVisualizarPOI" title="Ver ubicación">
+    <img src="icons/ui/fi-sr-overview.svg" alt="Visualizar POI" />
+  </button>
+</div>
+
+ <!-- 📑 Menú compartir -->
+<div class="menu-emergente" id="menuCompartir">
+  <button onclick="compartirTextoPOI()">
+    <img src="icons/ui/fi-sr-blog-text.svg" alt="Texto POI" />
+    <span>Compartir como texto</span>
+  </button>
+  <button onclick="compartirPosicionPOI()">
+    <img src="icons/ui/fi-sr-map-marker.svg" alt="Ubicación POI" />
+    <span>Compartir posición en otra app</span>
+  </button>
+</div>
+
+<!-- 📦 Menú exportar -->
+<div class="menu-emergente" id="menuExportar">
+  <button onclick="exportarPOIIndividual(window.tagsPOI)">
+    <img src="icons/ui/fi-sr-clip.svg" alt="Icono exportar POI" />
+    <span>Exportar este POI como KML</span>
+  </button>
+</div>
+
+<!-- 🤝 Menú contribuir -->
+<div class="menu-emergente" id="menuContribuir">
+    <button class="cerrarMenuContribuir" aria-label="Cerrar panel">
+  <img src="icons/ui/fi-sr-cross-small.svg" alt="Cerrar" />
+</button>
+  <div class="guia-osm">
+    <p>💡 ¿Qué puedo aportar aquí?</p>
+    <ul>
+      <li>📍 El lugar no tiene nombre o categoría</li>
+      <li>⚠️ Está cerrado, abandonado o ya no existe</li>
+      <li>🚫 Acceso bloqueado o error en ubicación</li>
+      <li>✏️ Faltan detalles: horario, servicios, tipo</li>
+      <li>📸 No aparece en el mapa, pero sí en la realidad</li>
+    </ul>
+    <p>
+      Tus sugerencias se publican como <strong>nota pública</strong> en OSM.<br />
+      No necesitas cuenta, pero puedes iniciar sesión si lo deseas.<br />
+      Los editores revisan estas notas para mejorar el mapa 🙌
+    </p>
+  </div>
+
+  <button onclick="abrirEditorOSM()">
+    <img src="icons/ui/fi-sr-code-editing.svg" alt="Editor OSM" />
+    <span>Editar directamente en OpenStreetMap</span>
+  </button>
+
+  <button onclick="añadirNotaOSM()">
+    <img src="icons/ui/fi-sr-blog-pencil.svg" alt="Añadir nota OSM" />
+    <span>Añadir sugerencia como nota pública</span>
+  </button>
+</div>
+<!-- 🗺️ Menú ver ubicación -->
+<div class="menu-emergente" id="menuVer">
+  <button onclick="abrirVisorWebDesdePOI('streetview')">
+    <img src="icons/ui/fi-sr-street-view.svg" alt="Street View" />
+    <span>Ver en Street View</span>
+  </button>
+
+  <button onclick="abrirVisorWebDesdePOI('mapillary')">
+    <img src="icons/ui/fi-sr-camera-viewfinder.svg" alt="Mapillary" />
+    <span>Ver en Mapillary</span>
+  </button>
+
+  <button onclick="abrirVisorWebDesdePOI('peakfinder')">
+    <img src="icons/ui/fi-sr-mountains.svg" alt="PeakFinder" />
+    <span>Ver en PeakFinder</span>
+  </button>
+</div>
+
+<div id="visorWeb" class="visor-full hidden">
+  <div class="visor-barra">
+    <span id="visorTitulo">Visor</span>
+    <button onclick="cerrarVisorWeb()">❌</button>
+  </div>
+  <iframe id="iframeWeb" src="" loading="lazy" allowfullscreen></iframe>
+</div>
+
+  
+  <!-- ⚙️ Script principal -->
+  <script src="script.js" defer></script>
+<!--  captura de pantalla -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker registrado ✅'))
+      .catch(err => console.error('Error al registrar SW', err));
+  }
+  </script>
+ 
+</body>
+</html>
