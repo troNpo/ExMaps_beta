@@ -2548,8 +2548,10 @@ function obtenerAltitud(lat, lng) {
         document.getElementById("altitudMapa").textContent = `Altitud: --`;
       }
     })
-    .catch(() => {
+    .catch(error => {
       document.getElementById("altitudMapa").textContent = `Altitud: --`;
+      document.getElementById("estadoAltitud").textContent = "❌ Error al consultar la API de altitud";
+      console.error("Error al consultar altitud:", error);
     });
 }
 
