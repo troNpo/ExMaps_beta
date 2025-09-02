@@ -2,6 +2,13 @@
 const map = L.map('map', {
   zoomControl: false
 }).setView([37.3886, -5.9953], 13);
+// 📐 Escala métrica en el mapa
+L.control.scale({
+  position: 'bottomleft',
+  imperial: false,
+  maxWidth: 150
+}).addTo(map);
+
 
 map.on("moveend", () => {
   requestAnimationFrame(() => {
@@ -2468,16 +2475,30 @@ function activarSeguimientoGPS() {
       const punto = L.latLng(lat, lon);
       map.setView(punto, 16);
 
-   if (!marcadorGPS) {
-  marcadorGPS = L.marker(punto)
-    .addTo(map)
-    .bindPopup("📍 Estás aquí");
-} else {
-  marcadorGPS.setLatLng(punto);
-}
+      if (!marcadorGPS) {
+        marcadorGPS = L.marker(punto)
+          .addTo(map)
+          .bindPopup("📍 Estás aquí");
+      } else {
+        marcadorGPS.setLatLng(punto);
+      }
 
-marcadorGPS.openPopup();
-mostrarAvisoToast("📍 Ubicación actualizada");
+      marcadorGPS.openPopup();
+      mostrarAvisoToast("📍 Ubicación actualizada");
+    },
+    (err) => {
+      mostrarAvisoToast("❌ Error al obtener ubicación");
+      console.error(err);
+    },
+    {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 10000
+    }
+  );
+
+  seguimientoActivo = true;
+}
 
 function desactivarSeguimientoGPS() {
   if (watchId) {
@@ -2513,3 +2534,35 @@ function mostrarAvisoToast(mensaje) {
     toast.classList.add("oculto");
   }, 3000);
 }
+
+function obtenerAltitud(lat, lng) {
+  const url = `https://api.opentopodata.org/v1/srtm90m?locations=${lat},${lng}`;
+
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data.results && data.results[0] && data.results[0].elevation !== null) {
+        const altitud = Math.round(data.results[0].elevation);
+        document.getElementById("altitudMapa").textContent = `Altitud: ${altitud} m`;
+      } else {
+        document.getElementById("altitudMapa").textContent = `Altitud: --`;
+      }
+    })
+    .catch(() => {
+      document.getElementById("altitudMapa").textContent = `Altitud: --`;
+    });
+}
+
+function actualizarCabecera() {
+  const centro = map.getCenter();
+  const zoom = map.getZoom();
+
+  document.getElementById("zoomMapa").textContent = "Zoom " + zoom;
+  document.getElementById("coordenadasMapa").textContent =
+    centro.lat.toFixed(5) + ", " + centro.lng.toFixed(5);
+
+  obtenerAltitud(centro.lat, centro.lng);
+}
+
+map.whenReady(actualizarCabecera);
+map.on("moveend zoomend", actualizarCabecera);
